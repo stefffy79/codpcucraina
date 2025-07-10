@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Căutare Permise de Conducere Ucraina</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #cfcfd1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select,
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #828282;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6e6e6e;
+        }
+
+        .result {
+            margin-top: 20px;
+            background-color: #d3d6d2;
+            border: 2px solid #000000;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .result h3 {
+            margin-bottom: 10px;
+            color: #1f1f1f;
+        }
+
+        .result p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .result a {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 8px 12px;
+            background-color: #4e4e4e;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .result a:hover {
+            background-color: #2e2e2e;
+        }
+
+        .result img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 5px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Serii permise de conducere Ucraina</h1>
+
+        <div class="search-section">
+            <label for="year">Căutare după anul emiterii:</label>
+            <select id="year">
+                <option value="">Alege anul...</option>
+            </select>
+            <button onclick="searchByYear()">Căutare</button>
+        </div>
+
+        <div class="search-section">
+            <label for="serie">Căutare după serie:</label>
+            <input type="text" id="serie" placeholder="Introdu seria (ex: AAA)" />
+            <button onclick="searchBySerie()">Căutare</button>
+        </div>
+
+        <div class="result" id="result" style="display: none;">
+            <h3 id="result-header"></h3>
+            <p id="result-text"></p>
+            <div id="model-links"></div>
+            <img id="result-image" src="" alt="" style="display: none;" />
+        </div>
+    </div>
+
+    <script>
+        const data = {
+
+            "2025": {
+                series: ["BXH", "BXE"],
+                models: [{ name: "Model 2021 ->", url: "https://i.ibb.co/2xDyx58/13-b-2-scaled-1.jpg" }
+                ]
+            },
+            "2024": {
+                series: ["BXH"],
+                models: [{ name: "Model 2021 ->", url: "https://i.ibb.co/2xDyx58/13-b-2-scaled-1.jpg" }
+                ]
+            },
+            "2023": {
+                series: ["BXI", "BXK", "BXH"],
+                models: [{ name: "Model 2021 ->", url: "https://i.ibb.co/2xDyx58/13-b-2-scaled-1.jpg" }
+                ]
+            },
+            "2022": {
+                series: ["BXM", "BXK", "BXI"],
+                models: [{ name: "Model 2021 ->", url: "https://i.ibb.co/2xDyx58/13-b-2-scaled-1.jpg" }
+                ]
+            },
+            "2021": {
+                series: ["BXM"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" },
+                { name: "Model 2021 ->", url: "https://i.ibb.co/2xDyx58/13-b-2-scaled-1.jpg" }
+                ]
+            },
+            "2020": {
+                series: ["KBI", "KBE"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2019": {
+                series: ["BXO", "KBE"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2018": {
+                series: ["BXO", "BXP"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2017": {
+                series: ["BXP"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2016": {
+                series: ["BXT"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2015": {
+                series: ["BXX", "BXT"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2014": {
+                series: ["BBT", "BXX"],
+                models: [{ name: "Model 2014-2021", url: "https://i.ibb.co/rKSbzssK/12-b-2-scaled-1.jpg" }]
+            },
+            "2013": {
+                series: ["BAH", "BBT", "AAB"],
+                models: [{ name: "Model 2013 cu chip", url: "https://i.ibb.co/MxbZFpqK/11-DL-2013-chip-scaled-1.jpg" },
+                { name: "Model 2013 fără chip", url: "https://i.ibb.co/cccwXpL2/10-DL-2013-scaled-1.jpg" }
+                ]
+            },
+            "2012": {
+                series: ["BAH", "BAE", "AAB"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2011": {
+                series: ["BAE", "BAA"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2010": {
+                series: ["AAB", "BAA"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2009": {
+                series: ["CAB", "BAA", "AOB", "CEB", "AEB"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2008": {
+                series: ["BKB", "CEB", "AIB", "BIB", "AXB", "BKB"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2007": {
+                series: ["PPB", "ПВБ", "AAB", "AIB", "BHB"],
+                models: [{ name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2006": {
+                series: ["XMM", "AEB"],
+                models: [{ name: "Model 2002-2006", url: "https://i.ibb.co/xtZJsZnG/07-DL-2002-2005-scaled-1.jpg" },
+                { name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2005": {
+                series: ["KIA"],
+                models: [{ name: "Model 2002-2006", url: "https://i.ibb.co/xtZJsZnG/07-DL-2002-2005-scaled-1.jpg" },
+                { name: "Model 2003-2005", url: "https://i.ibb.co/GQg3vPxc/08-DL-2003-2005-scaled-1.jpg" },
+                { name: "Model 2005-2012", url: "https://i.ibb.co/Tq86wT2F/09-DL-2005-2012-scaled-1.jpg" }]
+            },
+            "2004": {
+                series: ["KXC", "OIA", "BHA"],
+                models: [{ name: "Model 2002-2006", url: "https://i.ibb.co/xtZJsZnG/07-DL-2002-2005-scaled-1.jpg" },
+                { name: "Model 2003-2005", url: "https://i.ibb.co/GQg3vPxc/08-DL-2003-2005-scaled-1.jpg" }]
+            },
+            "2003": {
+                series: ["OIV", "CIB", "KXC", "HIA", "OIB", "ЯАВ", "XOA", "ICB", "ЯНВ"],
+                models: [{ name: "Model 2002-2006", url: "https://i.ibb.co/xtZJsZnG/07-DL-2002-2005-scaled-1.jpg" },
+                { name: "Model 2003-2005", url: "https://i.ibb.co/GQg3vPxc/08-DL-2003-2005-scaled-1.jpg" }
+                ]
+            },
+            "2002": {
+                series: ["ЯАВ"],
+                models: [{ name: "Model 2002-2006", url: "https://i.ibb.co/xtZJsZnG/07-DL-2002-2005-scaled-1.jpg" }]
+            },
+            "2001": {
+                series: ["ICA", "XOA"],
+                models: [{ name: "Model 2000-2001", url: "https://i.ibb.co/Ps77h9Xk/06-DL-2000-2002-scaled-1.jpg" }]
+            },
+            "2000": {
+                series: ["ЕІЯ"],
+                models: [{ name: "Model 2000-2001", url: "https://i.ibb.co/Ps77h9Xk/06-DL-2000-2002-scaled-1.jpg" }]
+            },
+            "1999": {
+                series: ["NO DATA"],
+                models: [{ name: "Model 1998-1999", url: "https://i.ibb.co/LX0gSm3j/05-DL-1998-1990-scaled-1.jpg" }]
+            },
+            "1998": {
+                series: ["OIA", "ЯАА"],
+                models: [{ name: "Model 1996-1998", url: "https://i.ibb.co/67b127rM/04-DL-1996-1998-scaled.jpg" },
+                { name: "Model 1998-1999", url: "https://i.ibb.co/LX0gSm3j/05-DL-1998-1990-scaled-1.jpg" }]
+            },
+            "1997": {
+                series: ["KIA"],
+                models: [{ name: "Model 1996-1998", url: "https://i.ibb.co/67b127rM/04-DL-1996-1998-scaled.jpg" }]
+            },
+
+            "1996": {
+                series: ["HIA"],
+                models: [{ name: "Model 1996-1998", url: "https://i.ibb.co/67b127rM/04-DL-1996-1998-scaled.jpg" }]
+            }
+            // Completează restul anilor dacă dorești
+        };
+
+        const fillYears = () => {
+            const yearSelect = document.getElementById("year");
+            for (let year = 2025; year >= 1996; year--) {
+                const option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        };
+
+        fillYears();
+
+        const searchByYear = () => {
+            const year = document.getElementById("year").value;
+            const result = document.getElementById("result");
+            const resultHeader = document.getElementById("result-header");
+            const resultText = document.getElementById("result-text");
+            const modelLinks = document.getElementById("model-links");
+            const resultImage = document.getElementById("result-image");
+
+            result.style.display = "block";
+            modelLinks.innerHTML = "";
+
+            if (year && data[year]) {
+                const series = data[year].series.join(", ");
+                resultHeader.textContent = `Serii posibile pentru anul ${year}:`;
+                resultText.textContent = `Serii: ${series}`;
+
+                data[year].models.forEach(model => {
+                    const link = document.createElement("a");
+                    link.href = model.url;
+                    link.target = "_blank";
+                    link.textContent = model.name;
+                    modelLinks.appendChild(link);
+                });
+
+                resultImage.src = `https://via.placeholder.com/300?text=Permis+${year}`;
+                resultImage.style.display = "block";
+            } else {
+                resultHeader.textContent = "";
+                resultText.textContent = "Nu există date pentru anul selectat.";
+                modelLinks.innerHTML = "";
+                resultImage.style.display = "none";
+            }
+        };
+
+        const searchBySerie = () => {
+            const inputSerie = document.getElementById("serie").value.toUpperCase();
+            const result = document.getElementById("result");
+            const resultHeader = document.getElementById("result-header");
+            const resultText = document.getElementById("result-text");
+            const modelLinks = document.getElementById("model-links");
+            const resultImage = document.getElementById("result-image");
+
+            let foundYears = [];
+
+            for (let year in data) {
+                if (data[year].series.includes(inputSerie)) {
+                    foundYears.push(year);
+                }
+            }
+
+            result.style.display = "block";
+            modelLinks.innerHTML = ""; // NU afișăm modele aici
+            resultImage.style.display = foundYears.length > 0 ? "block" : "none";
+
+            if (foundYears.length > 0) {
+                resultHeader.textContent = `Anul(anii) emiterii pentru seria ${inputSerie}:`;
+                resultText.textContent = foundYears.join(", ");
+                resultImage.src = `https://via.placeholder.com/300?text=Seria+${inputSerie}`;
+            } else {
+                resultHeader.textContent = "";
+                resultText.textContent = `Nu am găsit seria ${inputSerie}. Te rog verifică seria introdusă.`;
+                resultImage.style.display = "none";
+            }
+        };
+    </script>
+
+    <img class="watermark" src="https://i.ibb.co/q9v4wW9/20230913-133046.png" alt="watermark" />
+</body>
+
+</html>
